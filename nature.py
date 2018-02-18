@@ -27,65 +27,76 @@ api = tweepy.API(auth)
 if not os.path.exists('./images'):
     os.mkdir('./images')
 
-post_ids = []  # keeps track of used posts
 caption = ''  # caption for image
 extension = ''
 
-
 def get_images():
-    global post_ids, caption
+    global caption
     count = 0
     ids = []
+    statuses = []
 
-    with open('post_ids.txt') as f:
-        ids = f.readlines()
-    ids = [x.strip() for x in ids]
+    tweets = api.user_timeline(screen_name='nature_is_lit')
+    for status in tweets:
+        status = status.text.split('https', 1)
+        status = status[0].strip()
+        statuses.append(status)
 
-    # get 10 images from subreddit
     for submission in reddit.subreddit('NatureIsFuckingLit').hot():
         if 'https://i.imgur.com/' in submission.url or 'https://i.redd.it' in submission.url:
-            if str(submission.id) not in ids:
-                id_num = open('post_ids.txt', 'a')
-                id_num.write(str(submission.id + '\n'))
-                id_num.close()
+            if submission.title not in statuses:
                 img_url = submission.url
                 _, extension = os.path.splitext(img_url)
                 if extension == '.jpg':
                     urllib.urlretrieve(
                         img_url, 'images/image.jpg')
-                    caption = submission.title
-                    post_ids.append(str(submission.id))
-                    break
+                    file_size = os.stat('images/image.jpg')
+                    if file_size.st_size > 3145728:
+                        print 'file too big'
+                        pass
+                    else:
+                        caption = submission.title
+                        break
                 if extension == '.jpeg':
                     urllib.urlretrieve(
                         img_url, 'images/image.jpeg')
-                    caption = submission.title
-                    post_ids.append(str(submission.id))
-                    break
+                    file_size = os.stat('images/image.jpeg')
+                    if file_size.st_size > 3145728:
+                        print 'file too big'
+                        pass
+                    else:
+                        caption = submission.title
+                        break
                 if extension == '.gif':
                     urllib.urlretrieve(
                         img_url, 'images/image.gif')
-                    caption = submission.title
-                    post_ids.append(str(submission.id))
-                    break
+                    file_size = os.stat('images/image.gif')
+                    if file_size.st_size > 3145728:
+                        print 'file too big'
+                        pass
+                    else:
+                        caption = submission.title
+                        break
                 if extension == '.png':
                     urllib.urlretrieve(
                         img_url, 'images/image.png')
-                    caption = submission.title
-                    post_ids.append(str(submission.id))
-                    break
+                    file_size = os.stat('images/image.png')
+                    if file_size.st_size > 3145728:
+                        print 'file too big'
+                        pass
+                    else:
+                        caption = submission.title
+                        break
 
     send_tweet(extension)
 
-
 def send_tweet(extension):
-    global post_ids, caption
+    global caption
     api.update_with_media("images/image" + extension, caption)
-    print 'tweeting'
-    sleep(10800)  # tweet every 3 hours
-    captions = []
+    print 'sending tweet'
+    print 'sleeping 3 hours'
+    sleep(10800)
     get_images()
-
 
 if __name__ == '__main__':
     get_images()
