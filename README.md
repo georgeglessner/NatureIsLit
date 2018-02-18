@@ -1,3 +1,3 @@
 # Nature Is lit
 
-[Twitter Account](https://twitter.com/_NatureIsLit_)
+[Twitter Account](https://twitter.com/Nature_Is_Lit)
