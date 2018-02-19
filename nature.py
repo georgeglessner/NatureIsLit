@@ -30,6 +30,7 @@ if not os.path.exists('./images'):
 caption = ''  # caption for image
 extension = ''
 
+
 def get_images():
     global caption
     count = 0
@@ -41,7 +42,6 @@ def get_images():
         status = status.text.split('https', 1)
         status = status[0].strip()
         statuses.append(status)
-
     for submission in reddit.subreddit('NatureIsFuckingLit').hot():
         if 'https://i.imgur.com/' in submission.url or 'https://i.redd.it' in submission.url:
             if submission.title not in statuses:
@@ -77,6 +77,18 @@ def get_images():
                     else:
                         caption = submission.title
                         break
+                if extension == '.gifv':
+                    img_url = submission.url.split('.gifv')
+                    img_url = img_url[0] + '.gif'
+                    urllib.urlretrieve(
+                        img_url, 'images/image.gif')
+                    file_size = os.stat('images/image.gif')
+                    if file_size.st_size > 3145728:
+                        print 'file too big'
+                        pass
+                    else:
+                        caption = submission.title
+                        break
                 if extension == '.png':
                     urllib.urlretrieve(
                         img_url, 'images/image.png')
@@ -87,6 +99,8 @@ def get_images():
                     else:
                         caption = submission.title
                         break
+            else:
+                print 'Tweet already exists in timeline'
 
     send_tweet(extension)
 
@@ -94,9 +108,10 @@ def send_tweet(extension):
     global caption
     api.update_with_media("images/image" + extension, caption)
     print 'sending tweet'
-    print 'sleeping 3 hours'
-    sleep(10800)
+    print 'sleeping 2 hours'
+    sleep(7200)  # tweet every 2 hours
     get_images()
+
 
 if __name__ == '__main__':
     get_images()
