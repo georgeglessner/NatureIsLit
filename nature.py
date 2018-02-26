@@ -104,10 +104,25 @@ def get_images():
 
     send_tweet(extension)
 
+
+def favorite_tweets():
+    results = api.search(q='"nature is lit"', lang="en")
+    for result in results:
+        if result.author._json['screen_name'] != 'Nature_Is_Lit':
+            try:
+                if not result.favorited:
+                    api.create_favorite(result.id)
+                    print 'Favorited a tweet by', result.author._json['screen_name']
+            except tweepy.TweepError:
+                print 'Tweet already favorited'
+
+
 def send_tweet(extension):
     global caption
     api.update_with_media("images/image" + extension, caption)
     print 'sending tweet'
+    print 'searching for tweets to favorite'
+    favorite_tweets()
     print 'sleeping 2 hours'
     sleep(7200)  # tweet every 2 hours
     get_images()
