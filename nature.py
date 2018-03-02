@@ -32,18 +32,28 @@ extension = ''
 
 
 def get_images():
+    ''' Get posts/images from reddit '''
+
     global caption
     count = 0
     ids = []
     statuses = []
 
+    # get 20 latest tweets on your timeline, add to list
     tweets = api.user_timeline(screen_name='nature_is_lit')
     for status in tweets:
         status = status.text.split('https', 1)
         status = status[0].strip()
-        statuses.append(status)
+        # lengthy statuses cut off, cannot compare accurately, get duplicates
+        # do not add these statuses to list
+        if len(status) > 100:
+            pass
+        else:
+            statuses.append(status)
+    # get submissions in subreddit
     for submission in reddit.subreddit('NatureIsFuckingLit').hot():
         if 'https://i.imgur.com/' in submission.url or 'https://i.redd.it' in submission.url:
+            # make sure you have not tweeted this post already
             if submission.title not in statuses:
                 img_url = submission.url
                 _, extension = os.path.splitext(img_url)
@@ -53,7 +63,6 @@ def get_images():
                     file_size = os.stat('images/image.jpg')
                     if file_size.st_size > 3145728:
                         print 'file too big'
-                        pass
                     else:
                         caption = submission.title
                         break
@@ -63,7 +72,6 @@ def get_images():
                     file_size = os.stat('images/image.jpeg')
                     if file_size.st_size > 3145728:
                         print 'file too big'
-                        pass
                     else:
                         caption = submission.title
                         break
@@ -73,7 +81,6 @@ def get_images():
                     file_size = os.stat('images/image.gif')
                     if file_size.st_size > 3145728:
                         print 'file too big'
-                        pass
                     else:
                         caption = submission.title
                         break
@@ -85,7 +92,6 @@ def get_images():
                     file_size = os.stat('images/image.gif')
                     if file_size.st_size > 3145728:
                         print 'file too big'
-                        pass
                     else:
                         caption = submission.title
                         break
@@ -95,7 +101,6 @@ def get_images():
                     file_size = os.stat('images/image.png')
                     if file_size.st_size > 3145728:
                         print 'file too big'
-                        pass
                     else:
                         caption = submission.title
                         break
@@ -106,6 +111,8 @@ def get_images():
 
 
 def favorite_tweets():
+    ''' Favorite tweets containing keyword "Nature is lit" '''
+
     results = api.search(q='"nature is lit"', lang="en")
     for result in results:
         if result.author._json['screen_name'] != 'Nature_Is_Lit':
@@ -118,6 +125,8 @@ def favorite_tweets():
 
 
 def send_tweet(extension):
+    ''' Send Tweet '''
+
     global caption
     api.update_with_media("images/image" + extension, caption)
     print 'sending tweet'
