@@ -49,7 +49,7 @@ def get_images():
             pass
     for submission in reddit.subreddit('NatureIsFuckingLit').hot():
         if 'https://i.imgur.com/' in submission.url or 'https://i.redd.it' in submission.url:
-            if submission.title in statuses:
+            if submission.title not in statuses:
                 img_url = submission.url
                 _, extension = os.path.splitext(img_url)
                 if extension == '.jpg':
