@@ -49,58 +49,59 @@ def get_images():
             pass
     for submission in reddit.subreddit('NatureIsFuckingLit').hot():
         if 'https://i.imgur.com/' in submission.url or 'https://i.redd.it' in submission.url:
-            if submission.title not in statuses:
-                img_url = submission.url
-                _, extension = os.path.splitext(img_url)
-                if extension == '.jpg':
-                    urllib.urlretrieve(
-                        img_url, 'images/image.jpg')
-                    file_size = os.stat('images/image.jpg')
-                    if file_size.st_size > 3145728:
-                        print 'file too big'
-                    else:
-                        caption = submission.title
-                        break
-                elif extension == '.jpeg':
-                    urllib.urlretrieve(
-                        img_url, 'images/image.jpeg')
-                    file_size = os.stat('images/image.jpeg')
-                    if file_size.st_size > 3145728:
-                        print 'file too big'
-                    else:
-                        caption = submission.title
-                        break
-                elif extension == '.gif':
-                    urllib.urlretrieve(
-                        img_url, 'images/image.gif')
-                    file_size = os.stat('images/image.gif')
-                    if file_size.st_size > 3145728:
-                        print 'file too big'
-                    else:
-                        caption = submission.title
-                        break
-                elif extension == '.gifv':
-                    img_url = submission.url.split('.gifv')
-                    img_url = img_url[0] + '.gif'
-                    urllib.urlretrieve(
-                        img_url, 'images/image.gif')
-                    file_size = os.stat('images/image.gif')
-                    if file_size.st_size > 3145728:
-                        print 'file too big'
-                    else:
-                        caption = submission.title
-                        break
-                elif extension == '.png':
-                    urllib.urlretrieve(
-                        img_url, 'images/image.png')
-                    file_size = os.stat('images/image.png')
-                    if file_size.st_size > 3145728:
-                        print 'file too big'
-                    else:
-                        caption = submission.title
-                        break
-            else:
-                print 'Tweet already exists in timeline'
+            if len(submission.title) < 100:
+                if submission.title not in statuses:
+                    img_url = submission.url
+                    _, extension = os.path.splitext(img_url)
+                    if extension == '.jpg':
+                        urllib.urlretrieve(
+                            img_url, 'images/image.jpg')
+                        file_size = os.stat('images/image.jpg')
+                        if file_size.st_size > 3145728:
+                            print 'file too big'
+                        else:
+                            caption = submission.title
+                            break
+                    elif extension == '.jpeg':
+                        urllib.urlretrieve(
+                            img_url, 'images/image.jpeg')
+                        file_size = os.stat('images/image.jpeg')
+                        if file_size.st_size > 3145728:
+                            print 'file too big'
+                        else:
+                            caption = submission.title
+                            break
+                    elif extension == '.gif':
+                        urllib.urlretrieve(
+                            img_url, 'images/image.gif')
+                        file_size = os.stat('images/image.gif')
+                        if file_size.st_size > 3145728:
+                            print 'file too big'
+                        else:
+                            caption = submission.title
+                            break
+                    elif extension == '.gifv':
+                        img_url = submission.url.split('.gifv')
+                        img_url = img_url[0] + '.gif'
+                        urllib.urlretrieve(
+                            img_url, 'images/image.gif')
+                        file_size = os.stat('images/image.gif')
+                        if file_size.st_size > 3145728:
+                            print 'file too big'
+                        else:
+                            caption = submission.title
+                            break
+                    elif extension == '.png':
+                        urllib.urlretrieve(
+                            img_url, 'images/image.png')
+                        file_size = os.stat('images/image.png')
+                        if file_size.st_size > 3145728:
+                            print 'file too big'
+                        else:
+                            caption = submission.title
+                            break
+                else:
+                    print 'Tweet already exists in timeline'
 
     send_tweet(extension)
 
