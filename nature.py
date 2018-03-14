@@ -32,29 +32,24 @@ extension = ''
 
 
 def get_images():
-    ''' Get posts/images from reddit '''
-
     global caption
     count = 0
     ids = []
     statuses = []
 
-    # get 20 latest tweets on your timeline, add to list
     tweets = api.user_timeline(screen_name='nature_is_lit')
     for status in tweets:
         status = status.text.split('https', 1)
         status = status[0].strip()
         # lengthy statuses cut off, cannot compare accurately, get duplicates
         # do not add these statuses to list
-        if len(status) > 100:
-            pass
-        else:
+        if len(status) < 100:
             statuses.append(status)
-    # get submissions in subreddit
+        else:
+            pass
     for submission in reddit.subreddit('NatureIsFuckingLit').hot():
         if 'https://i.imgur.com/' in submission.url or 'https://i.redd.it' in submission.url:
-            # make sure you have not tweeted this post already
-            if submission.title not in statuses:
+            if submission.title in statuses:
                 img_url = submission.url
                 _, extension = os.path.splitext(img_url)
                 if extension == '.jpg':
@@ -66,7 +61,7 @@ def get_images():
                     else:
                         caption = submission.title
                         break
-                if extension == '.jpeg':
+                elif extension == '.jpeg':
                     urllib.urlretrieve(
                         img_url, 'images/image.jpeg')
                     file_size = os.stat('images/image.jpeg')
@@ -75,7 +70,7 @@ def get_images():
                     else:
                         caption = submission.title
                         break
-                if extension == '.gif':
+                elif extension == '.gif':
                     urllib.urlretrieve(
                         img_url, 'images/image.gif')
                     file_size = os.stat('images/image.gif')
@@ -84,7 +79,7 @@ def get_images():
                     else:
                         caption = submission.title
                         break
-                if extension == '.gifv':
+                elif extension == '.gifv':
                     img_url = submission.url.split('.gifv')
                     img_url = img_url[0] + '.gif'
                     urllib.urlretrieve(
@@ -95,7 +90,7 @@ def get_images():
                     else:
                         caption = submission.title
                         break
-                if extension == '.png':
+                elif extension == '.png':
                     urllib.urlretrieve(
                         img_url, 'images/image.png')
                     file_size = os.stat('images/image.png')
@@ -111,8 +106,6 @@ def get_images():
 
 
 def favorite_tweets():
-    ''' Favorite tweets containing keyword "Nature is lit" '''
-
     results = api.search(q='"nature is lit"', lang="en")
     for result in results:
         if result.author._json['screen_name'] != 'Nature_Is_Lit':
@@ -125,11 +118,9 @@ def favorite_tweets():
 
 
 def send_tweet(extension):
-    ''' Send Tweet '''
-
     global caption
     api.update_with_media("images/image" + extension, caption)
-    print 'sending tweet'
+    print 'sending tweet', caption
     print 'searching for tweets to favorite'
     favorite_tweets()
     print 'sleeping 2 hours'
